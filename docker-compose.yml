@@ -1,0 +1,7 @@
+version: "3"
+services:
+  tr-web:
+    image: qhduan/tr
+    container_name: ocr_api
+    ports:
+      - "8080:8080"
