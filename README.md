@@ -1,6 +1,12 @@
 # OCR Service
 
-based on https://github.com/myhub/tr
+Based on https://github.com/myhub/tr
+
+Thank you to the author!
+
+The original repo is claim its Apache License 2.0, so it is.
+
+DEMO: http://ocr.deepdialog.ai/
 
 run
 
