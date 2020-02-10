@@ -1,4 +1,6 @@
+# OCR Service
 
+based on https://github.com/myhub/tr
 
 run
 
