@@ -2,6 +2,7 @@
 import os
 import uuid
 import base64
+import multiprocessing
 import traceback
 import tr
 from flask import Flask, request, jsonify
@@ -10,6 +11,23 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
+
+def tr_run(path, return_dict):
+    try:
+        return_dict['ret'] = tr.run(path)
+    except:
+        return_dict['ret'] = None
+
+
+def get_result(path):
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+    p = multiprocessing.Process(target=tr_run, args=(path, return_dict))
+    p.start()
+    p.join()
+    print(return_dict)
+    return return_dict['ret']
 
 
 def recog(imgstr, ext='.png'):
@@ -24,7 +42,7 @@ def recog(imgstr, ext='.png'):
     with open(path, 'wb') as fp:
         fp.write(img)
     try:
-        r = tr.run(path)
+        r = get_result(path)
         r = [{'x': int(a[0]), 'y': int(a[1]), 'w': int(a[2]), 'h': int(a[3]), 'text': b, 'c': c} for a, b, c in r]
         try:
             os.remove(path)
