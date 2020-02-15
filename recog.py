@@ -3,17 +3,23 @@ import uuid
 import base64
 import multiprocessing
 import traceback
-import tr
+
+from contextlib import contextmanager
+import sys, os
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:  
+            yield
+        finally:
+            sys.stdout = old_stdout
 
 
-def get_result(path):
-    manager = multiprocessing.Manager()
-    return_dict = manager.dict()
-    p = multiprocessing.Process(target=tr_run, args=(path, return_dict))
-    p.start()
-    p.join()
-    print(return_dict)
-    return return_dict['ret']
+with suppress_stdout():
+    import tr
 
 
 def recog(imgstr, ext='.png'):
@@ -28,7 +34,7 @@ def recog(imgstr, ext='.png'):
     with open(path, 'wb') as fp:
         fp.write(img)
     try:
-        r = get_result(path)
+        r = tr.run(path)
         r = [
             {'x': int(a[0]), 'y': int(a[1]), 'w': int(a[2]), 'h': int(a[3]), 'text': b, 'c': c}
             for a, b, c in r]
@@ -43,7 +49,7 @@ def recog(imgstr, ext='.png'):
         except:
             pass
         traceback.print_exc()
-        return {'ok': False, 'error': 'Parse Error'}
+    return {'ok': False, 'error': 'Parse Error'}
 
 
 def recog_json(image):

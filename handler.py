@@ -27,6 +27,7 @@ def get_stdin():
 
 def response(obj):
     print(json.dumps(obj))
+    return json.dumps(obj)
 
 
 def main():
