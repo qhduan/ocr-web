@@ -1,0 +1,21 @@
+FROM openfaas/classic-watchdog:0.18.8 as watchdog
+FROM python:3-alpine
+COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
+RUN chmod +x /usr/bin/fwatchdog
+RUN addgroup -g 1000 -S app && adduser -u 1000 -S app -G app
+USER 1000
+
+COPY requirements.txt   .
+RUN pip install -r requirements.txt
+
+RUN git clone https://github.com/qhduan/tr.git /tr
+WORKDIR /tr
+RUN cat /tr/libtorch/lib/libtorch.so.part.* > /tr/libtorch/lib/libtorch.so
+RUN rm /tr/libtorch/lib/libtorch.so.part.*
+RUN mv /tr/libtorch /usr/lib/
+
+COPY handler.py .
+COPY recog.py .
+ENV fprocess="python handler.py"
+HEALTHCHECK --interval=3s CMD [ -e /tmp/.lock ] || exit 1
+CMD ["fwatchdog"]
