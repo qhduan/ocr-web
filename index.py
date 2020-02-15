@@ -2,6 +2,7 @@
 # Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 from flask import Flask, request
+from flask_cors import CORS
 # from function import handler
 # from gevent.wsgi import WSGIServer
 from gevent.pywsgi import WSGIServer
@@ -11,6 +12,8 @@ from recog import recog_json
 
 
 app = Flask(__name__)
+CORS(app)
+
 
 @app.before_request
 def fix_transfer_encoding():
