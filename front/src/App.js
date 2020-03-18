@@ -4,8 +4,7 @@ import './App.css';
 import { Upload, Icon, Card } from 'antd';
 const { Dragger } = Upload
 
-// const api = 'http://23.98.32.50/ocr/api/ocr/base64'
-const api = 'http://23.98.32.50:8080/function/ocr-faas-4'
+const api = 'http://47.245.53.119:18080/function/ocr-faas'
 
 
 function parseData(data) {
