@@ -1,45 +1,10 @@
 import React from 'react';
 import './App.css';
-
+import { parseData } from './parse-data'
 import { Upload, Icon, Card } from 'antd';
 const { Dragger } = Upload
 
 const api = 'http://47.245.53.119:18080/function/ocr-faas'
-
-
-function parseData(data) {
-  if (data.length <= 0) {
-    return ''
-  }
-  let wordCount = 0
-  let wordLength = 0
-  let leftest = data[0].x
-  for (const d of data) {
-    if (d.x < leftest) {
-      leftest = d.x
-    }
-    wordCount += d.text.length
-    wordLength += d.w
-  }
-
-  for (const d of data) {
-    d.x -= leftest
-  }
-
-  let singleLength = wordLength / wordCount + 0.1
-
-  let ret = ''
-  for (const d of data) {
-    const spaces = Math.round(d.x / singleLength)
-    for (let i = 0; i < spaces; i++) {
-      ret += ' '
-    }
-    ret += d.text
-    ret += '\n'
-  }
-  return ret
-
-}
 
 
 class Item extends React.Component {
